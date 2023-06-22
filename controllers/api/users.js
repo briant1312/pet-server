@@ -17,7 +17,6 @@ async function create(req, res, next) {
         const token = createJWT({ 
             userName: user.userName,
             password: user.password,
-            _id: user._id,
         })
         res.json(token)
     } catch (error) {
