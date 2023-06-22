@@ -13,12 +13,17 @@ function createJWT(user){
 async function create(req, res, next) {
     // just for right now I want to see if this is connected
     try {
-        const user = await User.create(req.body)
-        const token = createJWT({ 
-            userName: user.userName,
-            password: user.password,
-        })
+        const takenUser = await User.findOne({userName: req.body.userName})
+        if(takenUser) {
+            res.status(400).json(`${takenUser.userName} is already taken`)
+        } else {
+            const user = await User.create(req.body)
+            const token = createJWT({ 
+                userName: user.userName,
+                password: user.password,
+            })
         res.json(token)
+        }
     } catch (error) {
         res.status(400).json(error)
     }
