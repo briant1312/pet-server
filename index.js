@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-const favicon = require('serve-favicon');
 const logger = require('morgan');
 
 // Always require and configure near the top 
@@ -19,7 +18,6 @@ app.use(express.json());
 
 // Configure both serve-favicon & static middleware
 // to serve from the production 'build' folder
-app.use(favicon(path.join(__dirname, 'build', 'favicon.ico')));
 // telling our express app to use this directory for our static assets 
 app.use(express.static(path.join(__dirname, 'build')));
 
