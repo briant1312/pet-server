@@ -15,7 +15,17 @@ const userSchema = new Schema({
         trim: true,
         minLength: 3,
         required: true
-    }
+    },
+    state: {
+        type: String,
+    },
+    notifications: [{
+        type: String,
+    }],
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
 },{
     timestamps: true,
     toJSON: {
