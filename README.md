@@ -21,7 +21,7 @@ SECRET=literallyanything
         "password": "bbbb"
 }
 ```
-- returns jsonwebtoken
+- Returns jsonwebtoken
 
 
 
@@ -35,7 +35,7 @@ SECRET=literallyanything
         "password": "bbbb"
 }
 ```
-- returns jsonwebtoken
+- Returns jsonwebtoken
 
 # Posts
 
@@ -49,19 +49,19 @@ SECRET=literallyanything
         "text": "Post text"
 }
 ```
-- returns newly created post
+- Returns newly created post
 
 ## Index
 - GET
 - BaseUrl + post
 - Nothing is expected on this route
-- returns all posts
+- Returns all posts
 
 ## Show
 - GET
 - BaseUrl + post/:id
 - Nothing is expected on this route
-- returns post matching the id in the query parameter
+- Returns post matching the id in the query parameter
 
 ## Update
 - PATCH
@@ -73,13 +73,13 @@ SECRET=literallyanything
         "text": "Post text"
 }
 ```
-- returns updated post
+- Returns updated post
 
 ## Delete
 - DELETE
 - BaseUrl + post/:id
 - Nothing is expected on this route
-- returns status code 204 on delete success
+- Returns status code 204 on delete success
 
 # Comments
 
@@ -92,7 +92,7 @@ SECRET=literallyanything
         "text": "comment of text" 
 }
 ```
-- returns comment
+- Returns post that was commented on
 
 ## Update
 - PATCH
@@ -101,9 +101,10 @@ SECRET=literallyanything
 ```
         "text": "comment of text" 
 ```
+- Returns updated comment 
 
 ## Delete
 - DELETE
 - BaseUlr + /comment/:commentId
 - Nothing is expected on this route
-- Returns all comments on original post 
+- Returns status code 204 on delete success

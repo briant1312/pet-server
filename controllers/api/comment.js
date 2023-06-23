@@ -3,12 +3,11 @@ const User = require("../../models/user");
 const Comment = require("../../models/comment");
 
 function create(req, res, next) {
-  const comment = Comment.create({ ...req.body, owner: req.user._id }).then(
+  Comment.create({ ...req.body, owner: req.user._id }).then(
     (comment) => {
       Post.findById(req.params.id)
         .then((post) => {
           post.comments.push(comment._id);
-          post.populate("comments")
           return post.save();
         })
         .then((post) => {
@@ -17,26 +16,19 @@ function create(req, res, next) {
             populate: { path: "owner" },
           });
         })
-        .then((post) => res.json(post.comments))
+        .then((post) => {
+          return post.populate("owner")
+        })
+        .then((post) => res.json(post))
         .catch(next);
     }
   );
 }
 
 function deleteOne(req, res, next) {
-  Post.findById(req.params.id)
-    .then((post) => {
-      post.comments.id(req.body.id).remove();
-      return post.save();
-    })
-    .then((post) => {
-      return post.populate({
-        path: "comments",
-        populate: { path: "owner" },
-      });
-    })
-    .then((post) => res.json(post.comments))
-    .catch(next);
+  Comment.findOneAndDelete(req.params.id)
+  .then(() => res.sendStatus(204))
+  .catch((err) => res.status(400).json(err)) 
 }
 
 async function update(req, res, next) {
@@ -46,7 +38,7 @@ async function update(req, res, next) {
       { ...req.body, owner: req.user._id },
       { new: true }
     );
-    console.log(comment);
+    await comment.populate("owner")
     res.json(comment);
   } catch (err) {
     res.status(400).json(err);
