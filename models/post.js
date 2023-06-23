@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const commentSchema = require('./comment')
 
 const postSchema = new Schema({
     title:{
@@ -19,11 +18,14 @@ const postSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     }],
-    comments: [commentSchema],
+    comments: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Comment'
+    }],
     owner: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: false
     }
 })
 
