@@ -3,7 +3,8 @@ const User = require("../../models/user");
 
 async function create(req, res) {
   try {
-    const post = await Post.create(req.body);
+    const post = await Post.create({...req.body, owner: req.user._id});
+    await post.populate("comments")
     res.json(post);
   } catch (err) {
     res.status(400).json(err);
@@ -12,7 +13,7 @@ async function create(req, res) {
 
 async function index(req, res) {
   try {
-    const posts = await Post.find({}).populate("owner");
+    const posts = await Post.find({}).populate("owner").populate("comments")
     res.json(posts.reverse());
   } catch (err) {
     res.status(400).json(err);
@@ -24,7 +25,7 @@ async function show(req, res) {
         const post = await Post.findById(req.params.id).populate({
             path: 'comments',
             populate: {path: 'owner'}
-        }).populate('owner')
+        }).populate('owner').populate("comments")
         res.json(post)
     } catch (err) {
         res.status(400).json(err)
@@ -42,23 +43,24 @@ async function deleteOne(req, res) {
 
 async function update(req, res) {
     try {
-        const post = await Post.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        const post = await Post.findByIdAndUpdate(req.params.id, {...req.body, owner: req.user._id}, {new: true});
+        await post.populate("comments")
         res.json(post)
     } catch (err) {
         res.status(400).json(err)
     }
 }
 
-async function createComment(req, res){
-    try {
-        const post = await Post.findById(req.params.id)
-        post.updateOne(comments.push(req.body))  
-        Post.save()
-        res.json(post)
-    } catch (err) {
-        res.status(400).json(err)
-    }
-}
+// async function createComment(req, res){
+//     try {
+//         const post = await Post.findById(req.params.id)
+//         post.updateOne(comments.push(req.body))  
+//         Post.save()
+//         res.json(post)
+//     } catch (err) {
+//         res.status(400).json(err)
+//     }
+// }
 
 async function addLike(req,res){
     try {
@@ -108,7 +110,7 @@ module.exports = {
     index,
     deleteOne,
     update,
-    createComment,
+    // createComment,
     addLike,
     addDislike,
 };
