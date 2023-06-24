@@ -34,7 +34,7 @@ async function index(req, res) {
         }
     }
     if(searchTerm) {
-        if(queriedPosts.length) {
+        if(animal) {
             queriedPosts = queriedPosts.filter(post => {
                 return post.text.includes(searchTerm) || post.title.includes(searchTerm)
             }
