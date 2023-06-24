@@ -16,9 +16,6 @@ const userSchema = new Schema({
         minLength: 3,
         required: true
     },
-    state: {
-        type: String,
-    },
     notifications: [{
         type: String,
     }],
@@ -34,9 +31,9 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Post'
     }],
-    engagedResources: [{
+    savedPost: [{
         type: Schema.Types.ObjectId,
-        ref: 'Resource'
+        ref: 'Post'
     }]
 },{
     timestamps: true,

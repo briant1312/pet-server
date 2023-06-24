@@ -27,9 +27,12 @@ const postSchema = new Schema({
         ref: 'User',
         required: false
     },
-    animal: {
+    imageUrl: {
         type: String,
-        enum: ['Cat', 'Dog', 'Other'],
+    },
+    category: {
+        type: String,
+        enum: ['Grooming', 'Health Care', 'Nutrition', 'Training', 'Other'],
         required: true
     }
 }, {
