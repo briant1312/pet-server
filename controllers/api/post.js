@@ -35,12 +35,15 @@ async function index(req, res) {
     }
     if(searchTerm) {
         if(queriedPosts.length) {
-            queriedPosts = queriedPosts.filter(post => post.text.includes(searchTerm))
+            queriedPosts = queriedPosts.filter(post => {
+                return post.text.includes(searchTerm) || post.title.includes(searchTerm)
+            }
+            )
         }
         else {
             try {
                 const regex = new RegExp(searchTerm)
-                queriedPosts.push(await Post.find({ "text": {$regex: regex}}).populate({
+                queriedPosts.push(await Post.find({ $or: [{ "text": {$regex: regex}}, { "title": {$regex: regex}}]}).populate({
                         path: "comments",
                         populate: { path: "owner" },
                     })
