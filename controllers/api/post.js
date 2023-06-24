@@ -12,17 +12,67 @@ async function create(req, res) {
   }
 }
 
+
 async function index(req, res) {
-  try {
-    const posts = await Post.find({}).populate("owner").populate("comments")
-            .populate({
-                path: "comments",
-                populate: { path: "owner" },
-            })
-    res.json(posts.reverse());
-  } catch (err) {
-    res.status(400).json(err);
-  }
+    const animal = req.query.animal
+    const searchTerm = req.query.q
+    let queriedPosts = []
+    if(animal) {
+        try {
+            queriedPosts.push(await Post.find({ animal: animal })
+                .populate({
+                    path: "comments",
+                    populate: { path: "owner" },
+                })
+                .populate("owner")
+                .sort({ createdAt: "desc"})
+            )
+            queriedPosts = queriedPosts[0]
+        } catch(err) {
+            res.status(400).json(err)
+            return
+        }
+    }
+    if(searchTerm) {
+        if(animal) {
+            queriedPosts = queriedPosts.filter(post => {
+                return post.text.includes(searchTerm) || post.title.includes(searchTerm)
+            }
+            )
+        }
+        else {
+            try {
+                const regex = new RegExp(searchTerm)
+                queriedPosts.push(await Post.find({ $or: [{ "text": {$regex: regex}}, { "title": {$regex: regex}}]}).populate({
+                        path: "comments",
+                        populate: { path: "owner" },
+                    })
+                    .populate("owner")
+                    .sort({ createdAt: "desc"})
+                )
+            queriedPosts = queriedPosts[0]
+            } catch(err) {
+                res.status(400).json(err)
+                return
+            }
+        }
+    } 
+    if(!searchTerm && !animal) {
+        try {
+            queriedPosts.push(await Post.find({}).populate("owner").populate("comments")
+                .populate({
+                    path: "comments",
+                    populate: { path: "owner" },
+                })
+                .sort({ createdAt: "desc"})
+            ) 
+            queriedPosts = queriedPosts[0]
+        } catch(err) {
+            res.status(400).json(err);
+            return
+        }
+    }
+    res.json(queriedPosts)
 }
 
 async function show(req, res) {
