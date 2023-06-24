@@ -2,24 +2,24 @@ const Post = require("../../models/post");
 const User = require("../../models/user");
 
 async function create(req, res) {
-  try {
-    const post = await Post.create({...req.body, owner: req.user._id});
-    await post.populate("comments")
-    await post.populate("owner")
-    res.json(post);
-  } catch (err) {
-    res.status(400).json(err);
-  }
+    try {
+        const post = await Post.create({...req.body, owner: req.user._id});
+        await post.populate("comments")
+        await post.populate("owner")
+        res.json(post);
+    } catch (err) {
+        res.status(400).json(err);
+    }
 }
 
 
 async function index(req, res) {
-    const animal = req.query.animal
+    const category = req.query.category
     const searchTerm = req.query.q
     let queriedPosts = []
-    if(animal) {
+    if(category) {
         try {
-            queriedPosts.push(await Post.find({ animal: animal })
+            queriedPosts.push(await Post.find({ category: category })
                 .populate({
                     path: "comments",
                     populate: { path: "owner" },
@@ -34,7 +34,7 @@ async function index(req, res) {
         }
     }
     if(searchTerm) {
-        if(animal) {
+        if(category) {
             queriedPosts = queriedPosts.filter(post => {
                 return post.text.includes(searchTerm) || post.title.includes(searchTerm)
             }
@@ -57,7 +57,7 @@ async function index(req, res) {
             }
         }
     } 
-    if(!searchTerm && !animal) {
+    if(!searchTerm && !category) {
         try {
             queriedPosts.push(await Post.find({}).populate("owner").populate("comments")
                 .populate({
