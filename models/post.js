@@ -26,8 +26,15 @@ const postSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: false
+    },
+    animal: {
+        type: String,
+        enum: ['Cat', 'Dog', 'Other'],
+        required: true
     }
-})
+}, {
+    timestamps: true
+    })
 
 
 module.exports = mongoose.model('Post', postSchema)

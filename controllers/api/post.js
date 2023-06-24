@@ -110,7 +110,6 @@ module.exports = {
     index,
     deleteOne,
     update,
-    // createComment,
     addLike,
     addDislike,
 };
