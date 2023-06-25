@@ -16,63 +16,25 @@ async function create(req, res) {
 async function index(req, res) {
     const category = req.query.category
     const searchTerm = req.query.q
-    let queriedPosts = []
+    const query = {}
+
     if(category) {
-        try {
-            queriedPosts.push(await Post.find({ category: category })
-                .populate({
-                    path: "comments",
-                    populate: { path: "owner" },
-                })
-                .populate("owner")
-                .sort({ createdAt: "desc"})
-            )
-            queriedPosts = queriedPosts[0]
-        } catch(err) {
-            res.status(400).json(err)
-            return
-        }
+        query.category = category
     }
+
     if(searchTerm) {
-        if(category) {
-            queriedPosts = queriedPosts.filter(post => {
-                return post.text.includes(searchTerm) || post.title.includes(searchTerm)
-            }
-            )
-        }
-        else {
-            try {
-                const regex = new RegExp(searchTerm)
-                queriedPosts.push(await Post.find({ $or: [{ "text": {$regex: regex}}, { "title": {$regex: regex}}]}).populate({
-                        path: "comments",
-                        populate: { path: "owner" },
-                    })
-                    .populate("owner")
-                    .sort({ createdAt: "desc"})
-                )
-            queriedPosts = queriedPosts[0]
-            } catch(err) {
-                res.status(400).json(err)
-                return
-            }
-        }
-    } 
-    if(!searchTerm && !category) {
-        try {
-            queriedPosts.push(await Post.find({}).populate("owner").populate("comments")
-                .populate({
-                    path: "comments",
-                    populate: { path: "owner" },
-                })
-                .sort({ createdAt: "desc"})
-            ) 
-            queriedPosts = queriedPosts[0]
-        } catch(err) {
-            res.status(400).json(err);
-            return
-        }
+        query.$or = [
+            { text: { $regex: new RegExp(searchTerm, 'i') } },
+            { title: { $regex: new RegExp(searchTerm, 'i') } }
+        ];
     }
-    res.json(queriedPosts)
+
+    try {
+        const posts = await Post.find(query)
+        res.json(posts)
+    } catch(err) {
+        res.status(400).json(err)
+    }
 }
 
 async function show(req, res) {
