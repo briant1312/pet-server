@@ -32,7 +32,7 @@ const postSchema = new Schema({
     },
     category: {
         type: String,
-        enum: ['Grooming', 'Health Care', 'Nutrition', 'Training', 'Other'],
+        enum: ['Grooming', 'Healthcare', 'Nutrition', 'Training', 'Other'],
         required: true
     }
 }, {
