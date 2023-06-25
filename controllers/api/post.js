@@ -30,7 +30,12 @@ async function index(req, res) {
     }
 
     try {
-        const posts = await Post.find(query)
+        const posts = await Post.find(query).populate({
+                    path: "comments",
+                    populate: { path: "owner" },
+                })
+                .populate("owner")
+                .sort({ createdAt: "desc"})
         res.json(posts)
     } catch(err) {
         res.status(400).json(err)
