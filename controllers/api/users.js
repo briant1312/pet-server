@@ -62,6 +62,7 @@ async function getSavedResources(req, res, next) {
         const user = await User.findById(req.user._id)
         await user.populate('savedResources')
         await user.populate('comments')
+        await user.populate({path: 'comments', populate: 'postId'})
         res.json({ comments: user.comments, savedResources: user.savedResources })
     } catch(err) {
         res.status(400).json('Unable to retrieve Data')
