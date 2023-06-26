@@ -9,7 +9,7 @@ async function create(req, res, next) {
     const comment = await Comment.create({ ...req.body, owner: req.user._id, postId: post._id })
     const user = await User.findById(req.user._id)
     if (!user || !comment || !post){
-      return next()
+      res.status(400).json('Server Error')
     }
     post.comments.push(comment._id)
     await post.save()
@@ -22,7 +22,7 @@ async function create(req, res, next) {
     await post.populate('owner')
     res.json(post)
   } catch(err) {
-    return next(err)
+    res.status(400).json('Server Error')
   }
 }
 
@@ -42,7 +42,7 @@ async function update(req, res, next) {
     await comment.populate("owner")
     res.json(comment);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json('Server Error');
   }
 }
 
@@ -62,7 +62,7 @@ function addLike(req, res, next) {
         res.json(comment);
       }
     }) 
-    .catch(next);
+    .catch(res.status(400).json('Server Error'));
 }
 
 function addDislike(req, res, next) {
@@ -82,7 +82,7 @@ function addDislike(req, res, next) {
       }
 
     })
-    .catch(next);
+    .catch(res.status(400).json('Server Error'));
 }
 
 module.exports = {
