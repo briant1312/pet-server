@@ -55,7 +55,7 @@ async function savePost(req, res, next) {
             user.savedResources.push(postId)
         }
         await user.save()
-        res.status(204).json(user)
+        res.json(user)
     } catch(err) {
         res.status(400).json('Failed to save post')
     }
