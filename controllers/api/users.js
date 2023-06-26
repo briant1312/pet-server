@@ -49,9 +49,13 @@ async function savePost(req, res, next) {
     const postId = req.params.postId
     try {
         const user = await User.findById(req.user._id)
-        user.savedResources.push(postId)
+        if (user.savedResources.includes(postId)){
+            user.savedResources.remove(postId)
+        } else{
+            user.savedResources.push(postId)
+        }
         await user.save()
-        res.sendStatus(204)
+        res.status(204).json(user)
     } catch(err) {
         res.status(400).json('Failed to save post')
     }
