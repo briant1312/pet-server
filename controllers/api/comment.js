@@ -36,7 +36,6 @@ async function deleteOne(req, res, next) {
     const user = await User.findById(req.user._id)
     console.log(user.comments)
     user.comments.remove(req.params.id);
-    console.log(user)
     await user.save()
     res.json(user)
   } catch(err) {
