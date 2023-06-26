@@ -46,6 +46,29 @@ async function logIn(req, res, next) {
     }
 }
 
+async function savePost(req, res, next) {
+    const postId = req.params.postId
+    try {
+        const user = await User.findById(req.user._id)
+        user.savedResources.push(postId)
+        await user.save()
+        res.sendStatus(204)
+    } catch(err) {
+        res.status(400).json(err)
+    }
+}
+
+async function getSavedResources(req, res, next) {
+    try {
+        const user = await User.findById(req.user._id)
+        await user.populate('savedResources')
+        await user.populate('comments')
+        res.json({ comments: user.comments, savedResources: user.savedResources })
+    } catch(err) {
+        res.status(400).json(err)
+    }
+}
+
 function checkToken(req, res) {
     console.log('req.user', req.user)
     res.json(req.exp)
@@ -54,5 +77,7 @@ function checkToken(req, res) {
 module.exports = {
     create,
     logIn,
-    checkToken
+    checkToken,
+    savePost,
+    getSavedResources
 }
