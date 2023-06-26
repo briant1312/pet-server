@@ -8,7 +8,7 @@ async function create(req, res) {
         await post.populate("owner")
         res.json(post);
     } catch (err) {
-        res.status(400).json(err);
+        res.status(400).json('Failed to Create Post');
     }
 }
 
@@ -38,7 +38,7 @@ async function index(req, res) {
                 .sort({ createdAt: "desc"})
         res.json(posts)
     } catch(err) {
-        res.status(400).json(err)
+        res.status(400).json('Error Retrieving Resources')
     }
 }
 
@@ -51,7 +51,7 @@ async function show(req, res) {
             })
         res.json(post)
     } catch (err) {
-        res.status(400).json(err)
+        res.status(400).json('Error Retrieving Resource')
     }
 }
 
@@ -60,7 +60,7 @@ async function deleteOne(req, res) {
         const post = await Post.findByIdAndDelete(req.params.id)
         res.sendStatus(204)
     } catch(err) {
-        res.status(400).json(err)
+        res.status(400).json('Failed to Delete')
     }
 }
 
@@ -95,7 +95,7 @@ async function addLike(req,res){
             res.json(post)
         }
     } catch (err) {
-        res.status(400).json(err)
+        res.status(400).json('Failed to Like')
     }
 }
 
@@ -115,7 +115,7 @@ async function addDislike(req,res){
             res.json(post)
         }
     } catch(err) {
-        res.status(400).json(err)
+        res.status(400).json('Failed to dislike')
     }
 }
 

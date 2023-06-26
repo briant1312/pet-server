@@ -6,8 +6,11 @@ const Comment = require("../../models/comment");
 async function create(req, res, next) {
   try {
     const post = await Post.findById(req.params.id)
-    const comment = await Comment.create({ ...req.body, owner: req.user._id })
+    const comment = await Comment.create({ ...req.body, owner: req.user._id, postId: post._id })
     const user = await User.findById(req.user._id)
+    if (!user || !comment || !post){
+      res.status(400).json('Server Error')
+    }
     post.comments.push(comment._id)
     await post.save()
     user.comments.push(comment._id)
@@ -19,32 +22,9 @@ async function create(req, res, next) {
     await post.populate('owner')
     res.json(post)
   } catch(err) {
-    next(err)
+    res.status(400).json('Server Error')
   }
 }
-
-// function create(req, res, next) {
-//   Comment.create({ ...req.body, owner: req.user._id }).then(
-//     (comment) => {
-//       Post.findById(req.params.id)
-//         .then((post) => {
-//           post.comments.push(comment._id);
-//           return post.save();
-//         })
-//         .then((post) => {
-//           return post.populate({
-//             path: "comments",
-//             populate: { path: "owner" },
-//           });
-//         })
-//         .then((post) => {
-//           return post.populate("owner")
-//         })
-//         .then((post) => res.json(post))
-//         .catch(next);
-//     }
-//   );
-// }
 
 function deleteOne(req, res, next) {
   Comment.findOneAndDelete(req.params.id)
@@ -62,7 +42,7 @@ async function update(req, res, next) {
     await comment.populate("owner")
     res.json(comment);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json('Server Error');
   }
 }
 
@@ -82,7 +62,7 @@ function addLike(req, res, next) {
         res.json(comment);
       }
     }) 
-    .catch(next);
+    .catch(res.status(400).json('Server Error'));
 }
 
 function addDislike(req, res, next) {
@@ -102,7 +82,7 @@ function addDislike(req, res, next) {
       }
 
     })
-    .catch(next);
+    .catch(res.status(400).json('Server Error'));
 }
 
 module.exports = {

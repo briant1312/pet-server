@@ -22,7 +22,7 @@ async function create(req, res, next) {
         res.json(token)
         }
     } catch (error) {
-        res.status(400).json(error)
+        res.status(400).json('Failed to create user.')
     }
 }
 
@@ -41,8 +41,7 @@ async function logIn(req, res, next) {
             return
         }
     } catch (error) {
-        res.status.Code = 422
-        throw error
+        res.status(422).json('Incorrect Username or Password')
     }
 }
 
@@ -54,7 +53,7 @@ async function savePost(req, res, next) {
         await user.save()
         res.sendStatus(204)
     } catch(err) {
-        res.status(400).json(err)
+        res.status(400).json('Failed to save post')
     }
 }
 
@@ -65,7 +64,7 @@ async function getSavedResources(req, res, next) {
         await user.populate('comments')
         res.json({ comments: user.comments, savedResources: user.savedResources })
     } catch(err) {
-        res.status(400).json(err)
+        res.status(400).json('Unable to retrieve Data')
     }
 }
 
