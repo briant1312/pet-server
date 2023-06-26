@@ -6,8 +6,11 @@ const Comment = require("../../models/comment");
 async function create(req, res, next) {
   try {
     const post = await Post.findById(req.params.id)
-    const comment = await Comment.create({ ...req.body, owner: req.user._id })
+    const comment = await Comment.create({ ...req.body, owner: req.user._id, postId: post._id })
     const user = await User.findById(req.user._id)
+    if (!user || !comment || !post){
+      return next()
+    }
     post.comments.push(comment._id)
     await post.save()
     user.comments.push(comment._id)
@@ -19,32 +22,9 @@ async function create(req, res, next) {
     await post.populate('owner')
     res.json(post)
   } catch(err) {
-    next(err)
+    return next(err)
   }
 }
-
-// function create(req, res, next) {
-//   Comment.create({ ...req.body, owner: req.user._id }).then(
-//     (comment) => {
-//       Post.findById(req.params.id)
-//         .then((post) => {
-//           post.comments.push(comment._id);
-//           return post.save();
-//         })
-//         .then((post) => {
-//           return post.populate({
-//             path: "comments",
-//             populate: { path: "owner" },
-//           });
-//         })
-//         .then((post) => {
-//           return post.populate("owner")
-//         })
-//         .then((post) => res.json(post))
-//         .catch(next);
-//     }
-//   );
-// }
 
 function deleteOne(req, res, next) {
   Comment.findOneAndDelete(req.params.id)
