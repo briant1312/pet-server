@@ -27,11 +27,11 @@ const userSchema = new Schema({
         type: String,
         default: "https://www.clipartkey.com/mpngs/m/152-1520367_user-profile-default-image-png-clipart-png-download.png"
     },
-    engagedPosts: [{
+    comments: [{
         type: Schema.Types.ObjectId,
-        ref: 'Post'
+        ref: 'Comment'
     }],
-    savedPost: [{
+    savedResources: [{
         type: Schema.Types.ObjectId,
         ref: 'Post'
     }]
