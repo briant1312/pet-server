@@ -31,13 +31,13 @@ async function logIn(req, res, next) {
     try {
         const user = await User.findOne({userName: req.body.userName})
         if(!user){
-            res.sendStatus(422)
+            res.status(422).json('Incorrect Username or Password')
             return
         }
         if(bcrypt.compareSync(req.body.password, user.password)) {
             res.json(createJWT(user))
         } else {
-            res.sendStatus(422)
+            res.status(422).json('Incorrect Username or Password')
             return
         }
     } catch (error) {
