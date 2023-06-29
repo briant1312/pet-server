@@ -15,7 +15,7 @@ async function create(req, res, next) {
     try {
         const takenUser = await User.findOne({userName: req.body.userName})
         if(takenUser) {
-            res.status(400).json(`${takenUser.userName} is already taken`)
+            res.status(400).json(`Username ${takenUser.userName} is already taken`)
         } else {
             const user = await User.create(req.body)
             const token = createJWT( user )
@@ -31,13 +31,13 @@ async function logIn(req, res, next) {
     try {
         const user = await User.findOne({userName: req.body.userName})
         if(!user){
-            res.sendStatus(422)
+            res.status(422).json('Incorrect Username or Password')
             return
         }
         if(bcrypt.compareSync(req.body.password, user.password)) {
             res.json(createJWT(user))
         } else {
-            res.sendStatus(422)
+            res.status(422).json('Incorrect Username or Password')
             return
         }
     } catch (error) {

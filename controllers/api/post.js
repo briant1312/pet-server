@@ -58,7 +58,7 @@ async function show(req, res) {
 async function deleteOne(req, res) {
     try {
         const post = await Post.findByIdAndDelete(req.params.id)
-        res.sendStatus(204)
+        res.status(204).json("Failed to Delete")
     } catch(err) {
         res.status(400).json('Failed to Delete')
     }
